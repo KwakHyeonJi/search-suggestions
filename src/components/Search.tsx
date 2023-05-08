@@ -6,6 +6,7 @@ import { CACHE_SUGGESTIONS, CACHE_DURATION } from '../constants/cache'
 import useCache from '../hooks/useCache'
 import useDebounce from '../hooks/useDebounce'
 import useInput from '../hooks/useInput'
+import useKeyboardMove from '../hooks/useKeyboardMove'
 import { Suggestion } from '../types/search'
 
 import SearchBar from './SearchBar'
@@ -35,7 +36,7 @@ const SearchLayout = styled.div`
 `
 
 const Search = () => {
-  const { value: keyword, setValue: setKeyword, handleChange } = useInput('')
+  const [keyword, setKeyword, handleChange] = useInput('')
   const debouncedKeyword = useDebounce<string>(keyword, 250)
 
   const suggestions = useCache<Suggestion[]>({
@@ -47,7 +48,10 @@ const Search = () => {
   })
 
   const [searchBarFocused, setSearchBarFocused] = useState(false)
-  const [focusIndex, setFocusIndex] = useState<number>(-1)
+  const [focusIndex, handleMoveFocus, resetFocus] = useKeyboardMove(
+    suggestions.length,
+    () => setKeyword(suggestions[focusIndex].name)
+  )
 
   const handleChangeKeyword = (
     e: React.MouseEvent<HTMLLIElement>,
@@ -57,40 +61,8 @@ const Search = () => {
     setKeyword(newKeyword)
   }
 
-  const handleMoveFocus = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!suggestions.length) {
-      return
-    }
-
-    const lastIndex = suggestions.length - 1
-
-    switch (e.key) {
-      case 'ArrowDown': {
-        e.preventDefault()
-        setFocusIndex(prevIndex => (prevIndex < lastIndex ? prevIndex + 1 : 0))
-        break
-      }
-      case 'ArrowUp': {
-        e.preventDefault()
-        setFocusIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : lastIndex))
-        break
-      }
-      case 'Escape': {
-        setFocusIndex(-1)
-        break
-      }
-      case 'Enter': {
-        focusIndex > -1 && setKeyword(suggestions[focusIndex].name)
-        break
-      }
-      default: {
-        break
-      }
-    }
-  }
-
   useEffect(() => {
-    setFocusIndex(-1)
+    resetFocus()
   }, [debouncedKeyword])
 
   return (
