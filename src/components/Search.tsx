@@ -12,29 +12,6 @@ import { Suggestion } from '../types/search'
 import SearchBar from './SearchBar'
 import SearchSuggestions from './SearchSuggestions'
 
-const SearchLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  padding: 80px 0 160px 0;
-  width: 100%;
-  background: #cae9ff;
-
-  h1 {
-    margin: 0 0 40px 0;
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1.5;
-    text-align: center;
-  }
-
-  .search-section {
-    position: relative;
-    width: 490px;
-  }
-`
-
 const Search = () => {
   const [keyword, setKeyword, handleChange] = useInput('')
   const debouncedKeyword = useDebounce<string>(keyword, 250)
@@ -67,12 +44,12 @@ const Search = () => {
 
   return (
     <SearchLayout>
-      <h1>
+      <Title>
         국내 모든 임상시험 검색하고
         <br />
         온라인으로 참여하기
-      </h1>
-      <section className="search-section">
+      </Title>
+      <SearchSection>
         <SearchBar
           keyword={keyword}
           focused={searchBarFocused}
@@ -88,9 +65,32 @@ const Search = () => {
             handleChangeKeyword={handleChangeKeyword}
           />
         )}
-      </section>
+      </SearchSection>
     </SearchLayout>
   )
 }
+
+const SearchLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 80px 0 160px 0;
+  width: 100%;
+  background: #cae9ff;
+`
+
+const SearchSection = styled.section`
+  position: relative;
+  width: 490px;
+`
+
+const Title = styled.h1`
+  margin: 0 0 40px 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+`
 
 export default Search
