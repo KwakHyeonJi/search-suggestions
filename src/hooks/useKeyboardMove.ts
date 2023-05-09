@@ -1,45 +1,43 @@
 import { useState, KeyboardEvent } from 'react'
 
+const DEFAULT_INDEX = -1
+
 const useKeyboardMove = (
   length: number,
   handleEnterPressed: () => void
 ): [number, (e: KeyboardEvent<HTMLInputElement>) => void, () => void] => {
-  const [focusIndex, setFocusIndex] = useState<number>(-1)
+  const [focusIndex, setFocusIndex] = useState<number>(DEFAULT_INDEX)
 
-  const handleMoveFocus = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (!length) {
-      return
-    }
+  const handleArrowUp = () => {
+    setFocusIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : length - 1))
+  }
 
-    const lastIndex = length - 1
+  const handleArrowDown = () => {
+    setFocusIndex(prevIndex => (prevIndex < length - 1 ? prevIndex + 1 : 0))
+  }
 
-    switch (e.key) {
-      case 'ArrowDown': {
-        e.preventDefault()
-        setFocusIndex(prevIndex => (prevIndex < lastIndex ? prevIndex + 1 : 0))
-        break
-      }
-      case 'ArrowUp': {
-        e.preventDefault()
-        setFocusIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : lastIndex))
-        break
-      }
-      case 'Escape': {
-        setFocusIndex(-1)
-        break
-      }
-      case 'Enter': {
-        focusIndex > -1 && handleEnterPressed()
-        break
-      }
-      default: {
-        break
-      }
+  const handleEnter = () => {
+    if (focusIndex !== DEFAULT_INDEX) {
+      handleEnterPressed()
     }
   }
 
   const resetFocus = () => {
-    setFocusIndex(-1)
+    setFocusIndex(DEFAULT_INDEX)
+  }
+
+  const handleMoveFocus = (e: KeyboardEvent<HTMLInputElement>) => {
+    const functionFor: { [key: string]: () => void } = {
+      ArrowUp: handleArrowUp,
+      ArrowDown: handleArrowDown,
+      Enter: handleEnter,
+      Escape: resetFocus
+    }
+
+    if (!length || !Object.keys(functionFor).includes(e.key)) return
+
+    e.preventDefault()
+    return functionFor[e.key]()
   }
 
   return [focusIndex, handleMoveFocus, resetFocus]

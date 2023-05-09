@@ -12,6 +12,8 @@ import { Suggestion } from '../types/search'
 import SearchBar from './SearchBar'
 import SearchSuggestions from './SearchSuggestions'
 
+const MAX_SUGGESTIONS = 7
+
 const Search = () => {
   const [keyword, setKeyword, handleChange] = useInput('')
   const debouncedKeyword = useDebounce<string>(keyword, 250)
@@ -23,11 +25,12 @@ const Search = () => {
     duration: CACHE_DURATION,
     fetchData: getSuggestions
   })
+  const renderedSuggestions = suggestions.slice(0, MAX_SUGGESTIONS)
 
   const [searchBarFocused, setSearchBarFocused] = useState(false)
   const [focusIndex, handleMoveFocus, resetFocus] = useKeyboardMove(
-    suggestions.length,
-    () => setKeyword(suggestions[focusIndex].name)
+    renderedSuggestions.length,
+    () => setKeyword(renderedSuggestions[focusIndex].name)
   )
 
   const handleChangeKeyword = (
@@ -40,7 +43,7 @@ const Search = () => {
 
   useEffect(() => {
     resetFocus()
-  }, [debouncedKeyword])
+  }, [debouncedKeyword, searchBarFocused])
 
   return (
     <SearchLayout>
@@ -60,7 +63,7 @@ const Search = () => {
         />
         {searchBarFocused && (
           <SearchSuggestions
-            suggestions={suggestions}
+            suggestions={renderedSuggestions}
             focusIndex={focusIndex}
             handleChangeKeyword={handleChangeKeyword}
           />
