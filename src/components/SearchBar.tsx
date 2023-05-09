@@ -27,7 +27,7 @@ const SearchBar = ({
 
   return (
     <SearchBarLayout onSubmit={handleSubmit} focused={focused}>
-      <SearchBarIcon size={20} />
+      <SearchBarIcon />
       <SearchBarLabel htmlFor="search">검색어</SearchBarLabel>
       <SearchBarInput
         type="text"
@@ -56,7 +56,7 @@ const SearchBarLayout = styled.form<{ focused: boolean }>`
   background: #fff;
 `
 
-const SearchBarIcon = styled(BiSearch)`
+const SearchBarIcon = styled(BiSearch).attrs({ size: 20 })`
   margin: 0 15px 0 25px;
 `
 
