@@ -1,5 +1,5 @@
 # Search Suggestions
-![화면 캡처 2023-05-10 143943](https://github.com/KwakHyeonJi/search-suggestions/assets/22536999/090d9e5b-cad9-4eb6-a013-5ec9470a395c)
+![20230510](https://github.com/KwakHyeonJi/search-suggestions/assets/22536999/c90fe963-9207-4296-a6ce-4848a55a11e6)
 
 ## 🔍 Introduction
 - 캐싱을 활용한 추천 검색어 리스트
