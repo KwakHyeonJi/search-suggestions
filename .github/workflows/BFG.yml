@@ -3,7 +3,7 @@ name: BFG Repo-Cleaner
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   bfg:
