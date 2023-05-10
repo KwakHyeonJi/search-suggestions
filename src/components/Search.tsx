@@ -47,11 +47,7 @@ const Search = () => {
 
   return (
     <SearchLayout>
-      <Title>
-        국내 모든 임상시험 검색하고
-        <br />
-        온라인으로 참여하기
-      </Title>
+      <Title>추천 검색어 테스트</Title>
       <SearchSection>
         <SearchBar
           keyword={keyword}
