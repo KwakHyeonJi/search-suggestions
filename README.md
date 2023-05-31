@@ -1,4 +1,4 @@
-# Search Suggestions
+# search-suggestions
 
 ![20230510](https://github.com/KwakHyeonJi/search-suggestions/assets/22536999/c90fe963-9207-4296-a6ce-4848a55a11e6)
 
