@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { getExpirationDate } from '../utils/cache'
+import { CacheStorage } from '../repository/CacheStorage'
 
 interface UseCacheProps<T> {
   initialData: T
@@ -18,36 +18,28 @@ const useCache = <T>({
   fetchData
 }: UseCacheProps<T>) => {
   const [cachedData, setCachedData] = useState(initialData)
+  const cacheStorage = new CacheStorage(name, duration)
 
   useEffect(() => {
     const fetch = async () => {
-      const cacheStorage = await caches.open(name)
-      const newData = await fetchData(key)
-
-      await cacheStorage.put(
-        key,
-        new Response(JSON.stringify(newData), {
-          headers: {
-            Expires: getExpirationDate(duration)
-          }
-        })
-      )
-
-      setCachedData(newData)
+      try {
+        const newData = await fetchData(key)
+        await cacheStorage.put(key, newData)
+        setCachedData(newData)
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     const checkCache = async () => {
       try {
-        const cacheStorage = await caches.open(name)
-        const cache = await cacheStorage.match(key)
-
+        const cache = await cacheStorage.get(key)
         if (!cache) {
           fetch()
           return
         }
 
         const expires = cache.headers.get('Expires')
-
         if (!expires) {
           setCachedData(await cache.json())
           return
